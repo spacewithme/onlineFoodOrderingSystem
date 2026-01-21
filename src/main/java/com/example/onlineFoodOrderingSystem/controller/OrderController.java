@@ -1,0 +1,34 @@
+package com.example.onlineFoodOrderingSystem.controller;
+
+import com.example.onlineFoodOrderingSystem.dto.OrderResponse;
+import com.example.onlineFoodOrderingSystem.dto.PlaceOrderRequest;
+import com.example.onlineFoodOrderingSystem.service.OrderService;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/orders")
+public class OrderController {
+
+    private final OrderService service;
+
+    public OrderController(OrderService service) {
+        this.service = service;
+    }
+
+    // User access only
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping
+    public OrderResponse placeOrder(@RequestBody PlaceOrderRequest request, Authentication authentication) {
+        return service.placeOrder(authentication.getName(),request);
+    }
+
+    @GetMapping("/my")
+    public List<OrderResponse> getMyOrders(Authentication authentication) {
+        return service.getMyOrders(authentication.getName());
+    }
+
+}
