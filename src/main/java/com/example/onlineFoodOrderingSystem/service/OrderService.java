@@ -1,10 +1,7 @@
 package com.example.onlineFoodOrderingSystem.service;
 
 
-import com.example.onlineFoodOrderingSystem.dto.PlaceOrderRequest;
-import com.example.onlineFoodOrderingSystem.dto.OrderItemResponse;
-import com.example.onlineFoodOrderingSystem.dto.OrderResponse;
-import com.example.onlineFoodOrderingSystem.dto.UpdateOrderStatusRequest;
+import com.example.onlineFoodOrderingSystem.dto.*;
 import com.example.onlineFoodOrderingSystem.entity.*;
 import com.example.onlineFoodOrderingSystem.repository.*;
 import org.springframework.data.web.config.SortHandlerMethodArgumentResolverCustomizer;
@@ -108,6 +105,27 @@ public class OrderService {
         saveHistory(updatedOrder, newStatus, "ADMIN");
 
         return mapToOrderResponse(updatedOrder);
+    }
+
+    public List<OrderStatusHistoryResponse> getOrderHistory(Long orderId, String email, boolean isAdmin) {
+
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        if(!isAdmin && !order.getUser().getEmail().equals(email)) {
+            throw new IllegalStateException("You are not allowed to view this order history");
+        }
+
+        return historyRepo.findByOrderIdOrderByChangedAtAsc(orderId)
+                .stream()
+                .map(history -> {
+                    OrderStatusHistoryResponse dto = new OrderStatusHistoryResponse();
+                    dto.setStatus(history.getStatus().name());
+                    dto.setChangedBy(history.getChangedBy());
+                    dto.setChangedAt(history.getChangedAt());
+                    return dto;
+                })
+                .toList();
     }
 
 }
