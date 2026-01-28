@@ -154,4 +154,14 @@ public class OrderService {
         return mapToOrderResponse(updated);
     }
 
+    public Page<OrderResponse> getMyOrders(String email, OrderStatus status, int page, int size){
+        PageRequest pageable = PageRequest.of(page, size);
+
+        Page<Order> orders = (status == null)
+                ? orderRepo.findByUserEmailOrderByOrderTimeDesc(email, pageable)
+                : orderRepo.findByUserEmailAndStatusOrderByOrderTimeDesc(email, status,pageable);
+
+        return orders.map(this::mapToOrderResponse);
+    }
+
 }

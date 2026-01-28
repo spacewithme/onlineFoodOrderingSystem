@@ -10,10 +10,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    List<Order> findByUserId(Long userId);
+
     Page<Order> findByUserEmailOrderByOrderTimeDesc(String email, Pageable pageable);
 
     Page<Order> findByStatusOrderByOrderTimeDesc(OrderStatus status, Pageable pageable);
 
     Page<Order> findAllByOrderByOrderTimeDesc(Pageable pageable);
+
+    Page<Order> findByUserEmailAndStatusOrderByOrderTimeDesc(String email, OrderStatus status, Pageable pageable);
 }
