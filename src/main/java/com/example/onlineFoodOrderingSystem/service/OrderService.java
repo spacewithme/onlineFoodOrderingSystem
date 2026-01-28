@@ -4,6 +4,8 @@ package com.example.onlineFoodOrderingSystem.service;
 import com.example.onlineFoodOrderingSystem.dto.*;
 import com.example.onlineFoodOrderingSystem.entity.*;
 import com.example.onlineFoodOrderingSystem.repository.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.config.SortHandlerMethodArgumentResolverCustomizer;
 import org.springframework.stereotype.Service;
 
@@ -63,12 +65,11 @@ public class OrderService {
         return mapToOrderResponse(savedOrder);
     }
 
-    public List<OrderResponse> getMyOrders(String email) {
+    public Page<OrderResponse> getMyOrders(String email, int page, int size) {
 
-        return orderRepo.findByUserEmailOrderByOrderTimeDesc(email)
-                .stream()
-                .map(this::mapToOrderResponse)
-                .toList();
+        return orderRepo.findByUserEmailOrderByOrderTimeDesc(email, PageRequest.of(page, size)
+                )
+                .map(this::mapToOrderResponse);
     }
 
     private OrderResponse mapToOrderResponse(Order order){

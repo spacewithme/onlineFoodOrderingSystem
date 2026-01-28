@@ -3,6 +3,7 @@ package com.example.onlineFoodOrderingSystem.controller;
 import com.example.onlineFoodOrderingSystem.dto.OrderResponse;
 import com.example.onlineFoodOrderingSystem.dto.PlaceOrderRequest;
 import com.example.onlineFoodOrderingSystem.service.OrderService;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +28,8 @@ public class OrderController {
     }
 
     @GetMapping("/my")
-    public List<OrderResponse> getMyOrders(Authentication authentication) {
-        return service.getMyOrders(authentication.getName());
+    public Page<OrderResponse> getMyOrders(Authentication authentication, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+        return service.getMyOrders(authentication.getName(),page,size);
     }
 
 }
