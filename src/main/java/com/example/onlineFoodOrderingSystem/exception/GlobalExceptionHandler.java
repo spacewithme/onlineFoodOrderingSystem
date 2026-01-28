@@ -1,6 +1,7 @@
 package com.example.onlineFoodOrderingSystem.exception;
 
 import com.example.onlineFoodOrderingSystem.dto.ApiErrorResponse;
+import com.example.onlineFoodOrderingSystem.entity.OrderStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 
 @RestControllerAdvice
@@ -89,6 +90,30 @@ public class GlobalExceptionHandler {
                 new ApiErrorResponse(
                         HttpStatus.BAD_REQUEST.value(),
                         message,
+                        request.getRequestURI()
+                )
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiErrorResponse> handleTypeMismatch(
+            MethodArgumentTypeMismatchException ex,
+            HttpServletRequest request
+    ) {
+        if (ex.getRequiredType() == OrderStatus.class) {
+            return ResponseEntity.badRequest().body(
+                    new ApiErrorResponse(
+                            HttpStatus.BAD_REQUEST.value(),
+                            "Invalid order status. Allowed values: PLACED, PREPARING, DELIVERED, CANCELLED",
+                            request.getRequestURI()
+                    )
+            );
+        }
+
+        return ResponseEntity.badRequest().body(
+                new ApiErrorResponse(
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Invalid request parameter",
                         request.getRequestURI()
                 )
         );
