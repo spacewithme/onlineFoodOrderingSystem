@@ -138,4 +138,20 @@ public class OrderService {
         return orders.map(this::mapToOrderResponse);
     }
 
+    public OrderResponse cancelOrder(Long orderId, String email) {
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        if(!order.getUser().getEmail().equals(email)) {
+            throw new IllegalStateException("You are not allowed to be cancel this order");
+        }
+
+        if(!order.getStatus().canBeCancelled()) {
+            throw new IllegalStateException("Order cannot be cancelled in "+ order.getStatus() + " state");
+        }
+        order.setStatus(OrderStatus.CANCELLED);
+        Order updated = orderRepo.save(order);
+
+        return mapToOrderResponse(updated);
+    }
+
 }

@@ -17,4 +17,8 @@ public enum OrderStatus {
             case CANCELLED -> false;
         };
     }
+
+    public boolean canBeCancelled() {
+        return this == PLACED || this == PREPARING;
+    }
 }

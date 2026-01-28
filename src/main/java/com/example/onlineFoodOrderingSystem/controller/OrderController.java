@@ -8,7 +8,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
@@ -30,6 +29,12 @@ public class OrderController {
     @GetMapping("/my")
     public Page<OrderResponse> getMyOrders(Authentication authentication, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
         return service.getMyOrders(authentication.getName(),page,size);
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @PatchMapping("/{orderId}/cancel")
+    public OrderResponse cancelOrder(@PathVariable Long orderId, Authentication authentication) {
+        return service.cancelOrder(orderId, authentication.getName());
     }
 
 }
