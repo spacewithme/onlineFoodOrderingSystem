@@ -129,4 +129,13 @@ public class OrderService {
                 .toList();
     }
 
+    public Page<OrderResponse> getAllOrders(OrderStatus status, int page, int size) {
+        PageRequest pageable = PageRequest.of(page,size);
+
+        Page<Order> orders = (status ==null) ? orderRepo.findAllByOrderByOrderTimeDesc(pageable)
+                : orderRepo.findByStatusOrderByOrderTimeDesc(status, pageable);
+
+        return orders.map(this::mapToOrderResponse);
+    }
+
 }
