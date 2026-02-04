@@ -2,7 +2,6 @@ package com.example.onlineFoodOrderingSystem.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-//import org.springframework.web.bind.annotation.*;
 import jakarta.persistence.*;
 
 @Entity
