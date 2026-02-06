@@ -3,8 +3,6 @@ package com.example.onlineFoodOrderingSystem.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import org.hibernate.annotations.AnyDiscriminatorImplicitValues;
-
 @Entity
 @Getter @Setter
 @NoArgsConstructor
